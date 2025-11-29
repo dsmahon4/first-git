@@ -57,7 +57,7 @@ void nameValidation(string& tokenName) {
 				break;
 			}
 		}
-	} 
+	}
 }
 
 
@@ -126,17 +126,18 @@ intVar* createIntVar(string userCommand, string& currentScope, vector<intVar*>& 
 			getline(cin, tokenValue);
 		}
 
-	++globalVarCounter;
-	intVar* newInt = new intVar;
-	(*newInt).name = tokenName;
-	(*newInt).type = tokenType;
-	(*newInt).value = tokenValue;
-	(*newInt).address = formatAddress(baseStackAddress + (4 * globalVarCounter));
-	(*newInt).scope = currentScope;
-	(*newInt).isFreed = false;
+		++globalVarCounter;
+		intVar* newInt = new intVar;
+		(*newInt).name = tokenName;
+		(*newInt).type = tokenType;
+		(*newInt).value = tokenValue;
+		(*newInt).address = formatAddress(baseStackAddress + (4 * globalVarCounter));
+		(*newInt).scope = currentScope;
+		(*newInt).isFreed = false;
 
-	cout << "\nStack variable created: " << tokenName << "\n\n";
-	return newInt;
+		cout << "\nStack variable created: " << tokenName << "\n\n";
+		return newInt;
+	}
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -151,15 +152,12 @@ void createIntVarPtr(string userCommand, string& currentScope, vector<intVar*>& 
 		stringstream ss(userCommand);
 		ss >> tokenType >> tokenName >> tokenDiscard1 >> tokenNew;
 
-
 		if ((tokenNew == "new")) {
 			ss >> tokenValue;
 		}
-		
-
 		if ((tokenType != "int*") || (ss.fail()) || (tokenDiscard1 != "=") || (ss.peek() != EOF)) {
 			cerr << "Ah, Ah, Ah! You didn't say the magic word! To initialize a pointer -> (int* <name> = &variable) \n"
-				<< "To allocate heap memory -> (int* <name> = new int(<value>)\n" 
+				<< "To allocate heap memory -> (int* <name> = new int(<value>)\n"
 				<< "or type 'back' to return to menu: ";
 			ss.clear();
 			getline(cin, userCommand);
@@ -168,6 +166,7 @@ void createIntVarPtr(string userCommand, string& currentScope, vector<intVar*>& 
 
 		break;
 	}
+
 
 	if (userCommand == "back")
 	{
@@ -198,14 +197,14 @@ void createIntVarPtr(string userCommand, string& currentScope, vector<intVar*>& 
 
 		if (tokenValue[(tokenValue.length() - 1)] != ')')
 			isValidInt = false;
-		
+
 		while (!isValidInt) { // invalid input loop for VALUE
 			cerr << "Please try again. Ensure a valid integer is used to assign as value.";
 			getline(cin, extractValue);
 			isValidInt = true;
 
 			int index = (tokenValue[0] == '-') ? 1 : 0;
-			for (int i = index; i < extractValue.length(); ++i) { 
+			for (int i = index; i < extractValue.length(); ++i) {
 				if (!isdigit(extractValue[i])) {
 					isValidInt = false;
 					break;
@@ -287,7 +286,7 @@ void deletePointer(string userCommand, vector<intVar*>& intVarPtrs, vector<intVa
 			ptrFound = true;
 			break;
 		}
-	} 
+	}
 
 	if (!ptrFound) {
 		cerr << "These are not the pointers you are looking for. (" << tokenName << " not found)\n"
@@ -416,8 +415,8 @@ void changeValue(string userCommand, vector<intVar*>& intVarPtrs) {
 		}
 		if (!validAddress) {
 			cerr << "Ah, Ah, Ah! You forgot to say the magic word!\n"
-					"Don't forget the '&' and ensure your variable is defined.\n"
-					"Try again!\n\n";
+				"Don't forget the '&' and ensure your variable is defined.\n"
+				"Try again!\n\n";
 			return;
 		}
 	} // nnnnNOW we have a good address... or good int?
@@ -451,7 +450,7 @@ void dereferenceAndAssign(string userCommand, vector<intVar*>& intVarPtrs, vecto
 		return;
 	}
 
-		// Checking for good ints!
+	// Checking for good ints!
 	while (!isValidInput) {
 		isValidInput = true;
 		int index = (tokenValue[0] == '-') ? 1 : 0; // start checking tokenValue AFTER the unary
@@ -465,7 +464,7 @@ void dereferenceAndAssign(string userCommand, vector<intVar*>& intVarPtrs, vecto
 
 		if (!isValidInput) { // So, we know this ISNT an integer. Is it a variable??
 			for (intVar* nameCheck : intVarPtrs) {
-				if (tokenValue.substr(1) == (*nameCheck).name) { 
+				if (tokenValue.substr(1) == (*nameCheck).name) {
 					if ((*nameCheck).type == "int") {	// Yep! Its a variable! BUT, is it an INT!?
 						isValidInput = true;
 						tokenValue = (*nameCheck).value; // tokenValue is now == to the value found at the input address
@@ -570,11 +569,11 @@ void functionReturn(vector<intVar*>& intVarPtrs, vector<intVar*>& newHeapVarPtrs
 			removedVars.push_back((*intVarPtrs[i]).name);	// remember the NAME to reference later
 			--globalVarCounter;
 			delete intVarPtrs[i];						// delete the REAL heap memory of data containing data 
-														// for simulated stack variable
+			// for simulated stack variable
 
 			intVarPtrs.erase(intVarPtrs.begin() + i);	// This erases the ADDRESS to the REAL heap memory for the
-														// simulated stack variable. No need to set any REAL pointers
-														// to nullptr, because they never existed past the function that made them.
+			// simulated stack variable. No need to set any REAL pointers
+			// to nullptr, because they never existed past the function that made them.
 		}
 	}
 
@@ -620,7 +619,7 @@ void showMemory(string& currentScope, vector<string>& functions, vector<intVar*>
 
 				// If it's a pointer, show what it points to
 				if ((*intVarPtr).type == "int*" && (*intVarPtr).value != "N/A") {
-					
+
 
 					for (intVar* ptrVar : intVarPtrs) {
 						if ((*ptrVar).address == (*intVarPtr).value && (*ptrVar).isFreed)
@@ -959,7 +958,7 @@ int main() {
 	inputTest1.open("test1_basic_stack.txt");
 	inputTestEdge.open("test_edge_cases.txt");
 	inputTestValidation.open("test_input_validation.txt");
-	
+
 	int testIndex = 1; // iterates after every test command to identify which crashed program
 
 	cout << "======================================" << endl;
